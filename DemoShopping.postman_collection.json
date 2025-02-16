@@ -1,0 +1,3103 @@
+{
+	"info": {
+		"_postman_id": "221da1cb-c50a-40e8-9b17-bc563e13f3e8",
+		"name": "DemoShopping",
+		"description": "Моя коллекция запросов для проекта [интернет-магазин](https://qa.demoshopping.ru/) группы G-9",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20541504",
+		"_collection_link": "https://www.postman.com/espar/workspace/g9-mikhail-li/collection/20541504-221da1cb-c50a-40e8-9b17-bc563e13f3e8?action=share&source=collection_link&creator=20541504"
+	},
+	"item": [
+		{
+			"name": "Autotests",
+			"item": [
+				{
+					"name": "Возвращение списка всех продуктов",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"\tpm.expect(pm.response.responseTime).to.be.below(500);\r",
+									"});\r",
+									"pm.test(\"Проверка необходимых полей в ответе\", function () {\r",
+									"\tpm.expect(pm.response.text()).to.include(\"product_id\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"name\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"description\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"price\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"category\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"manufacturer\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"imageUrl\");\r",
+									"\tpm.expect(pm.response.text()).to.include(\"freeShipping\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового продукта",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Content-Type is present\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"ETag is present\", function () {\r",
+									"    pm.response.to.have.header(\"ETag\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка наличия сообщения 'Продукт успешно добавлен'\", function() {\r",
+									"    var responseBody = pm.response.text();\r",
+									"    pm.expect(responseBody).to.include(\"Продукт успешно добавлен\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{$randomUserName}}\",\r\n  \"description\": \"{{$randomCatchPhrase}}\",\r\n  \"price\": {{$randomInt}},\r\n  \"category\": \"{{$randomCatchPhraseNoun}}\",\r\n  \"manufacturer\": \"{{$randomBankAccountName}}\",\r\n  \"imageUrl\": \"{{$randomImageUrl}}\",\r\n  \"freeShipping\": {{$randomBoolean}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/add-product",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товара по ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка, что product_id является числом\", function () {\r",
+									"\tvar jsonData = pm.response.json();\r",
+									"\tpm.expect(jsonData.product_id).that.is.a('number');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Проверка, что name is string\", function () {\r",
+									"\tvar jsonData = pm.response.json();\r",
+									"\tpm.expect(jsonData.name).that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка, что description is string\", function () {\r",
+									"\tvar jsonData = pm.response.json();\r",
+									"\tpm.expect(jsonData.description).that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Проверка, что price является числом\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var price = parseFloat(jsonData.price);\r",
+									"\t\tpm.expect(price).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка, что category is string\", function () {\r",
+									"\tvar jsonData = pm.response.json();\r",
+									"\tpm.expect(jsonData.category).that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка, что manufacturer is string\", function () {\r",
+									"\tvar jsonData = pm.response.json();\r",
+									"\tpm.expect(jsonData.manufacturer).that.is.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка, что imageUrl является URI\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var imageUrl = jsonData.imageUrl;\r",
+									"    var uriPattern = /^\\/[a-zA-Z0-9-_]+(?:\\/[a-zA-Z0-9-_]+)*\\.(jpg|jpeg|png|webp)$/;\r",
+									"    pm.expect(imageUrl).to.match(uriPattern);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка, что freeShipping is boolean\", function() {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.freeShipping).to.be.a('boolean');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление защищённого от удаления товара",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Полное обновление товара по ID",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка наличия сообщения 'Товар обновлён'\", function() {\r",
+									"    var responseBody = pm.response.text();\r",
+									"    pm.expect(responseBody).to.include(\"Товар обновлён\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2884,\r\n    \"name\": \"NotPhilips X 300\",\r\n    \"description\": \"Fully changing item\",\r\n    \"price\": 709,\r\n    \"category\": \"NotWatches\",\r\n    \"manufacturer\": \"SusPhilips\",\r\n    \"imageUrl\": \"/images/laptop.webp\",\r\n    \"freeShipping\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Частичное обновление товара",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Проверка наличия сообщения 'Товар частично обновлён'\", function() {\r",
+									"    var responseBody = pm.response.text();\r",
+									"    pm.expect(responseBody).to.include(\"Товар частично обновлён\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Philips Y 300\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Возвращение списка всех продуктов",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового продукта",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{$randomUserName}}\",\r\n  \"description\": \"{{$randomCatchPhrase}}\",\r\n  \"price\": {{$randomInt}},\r\n  \"category\": \"{{$randomCatchPhraseNoun}}\",\r\n  \"manufacturer\": \"{{$randomBankAccountName}}\",\r\n  \"imageUrl\": \"{{$randomImageUrl}}\",\r\n  \"freeShipping\": {{$randomBoolean}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/add-product",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового продукта с пустым полем \"name\"",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"\",\r\n  \"description\": \"Making world go round\",\r\n  \"price\": 707,\r\n  \"category\": \"Watches\",\r\n  \"manufacturer\": \"Philips\",\r\n  \"imageUrl\": \"/images/watches.webp\",\r\n  \"freeShipping\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/add-product",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового продукта с неправильным типом значения для \"freeShipping\"",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Philips X 300\",\r\n  \"description\": \"Making world go round\",\r\n  \"price\": 77,\r\n  \"category\": \"Watches\",\r\n  \"manufacturer\": \"Philips\",\r\n  \"imageUrl\": \"/images/watches.webp\",\r\n  \"freeShipping\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/add-product",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товара по ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск несуществующего товара по ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/911",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"911"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление защищённого от удаления товара",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление несуществующего товара",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/id/911",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"911"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Полное обновление товара по ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2884,\r\n    \"name\": \"NotPhilips X 300\",\r\n    \"description\": \"Fully changing item\",\r\n    \"price\": 709,\r\n    \"category\": \"NotWatches\",\r\n    \"manufacturer\": \"SusPhilips\",\r\n    \"imageUrl\": \"/images/laptop.webp\",\r\n    \"freeShipping\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Полное обновление товара по ID с пустым полем \"name\"",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2884,\r\n    \"name\": \"\",\r\n    \"description\": \"Fully changing item\",\r\n    \"price\": 709,\r\n    \"category\": \"NotWatches\",\r\n    \"manufacturer\": \"SusPhilips\",\r\n    \"imageUrl\": \"/images/laptop.webp\",\r\n    \"freeShipping\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Полное обновление несуществующего товара по ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 911,\r\n    \"name\": \"Sony-Ericsson w-19i\",\r\n    \"description\": \"The best experience\",\r\n    \"price\": 999,\r\n    \"category\": \"Walkman\",\r\n    \"manufacturer\": \"Sony\",\r\n    \"imageUrl\": \"/images/phone.webp\",\r\n    \"freeShipping\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/911",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"911"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Полное обновление защищённого от изменений товара по ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 50,\r\n    \"name\": \"Motorola M 500\",\r\n    \"description\": \"Making noises\",\r\n    \"price\": 101,\r\n    \"category\": \"Flip phone\",\r\n    \"manufacturer\": \"Motorola\",\r\n    \"imageUrl\": \"/images/phone.webp\",\r\n    \"freeShipping\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Частичное обновление товара по ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Philips Y 300\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Частичное обновление товара по ID с неверным типом данных в цене",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"price\": \"Two thousands\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/{{product_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"{{product_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Частичное обновление защищённого от обновлений товара по ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Not Huawei Mi 3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Частичное обновление несуществующего товара по ID",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"description\": \"The truth is out there\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/id/911",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"id",
+								"911"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по категории Laptops",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByCategory?category=Laptops",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByCategory"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Watches",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Laptops"
+								},
+								{
+									"key": "category",
+									"value": "Phones",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по несуществующей категории",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByCategory?category=Headphones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByCategory"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Headphones"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по категории без выбора категории",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByCategory",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByCategory"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Watches",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Laptops",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Phones",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по нескольким выбранным категориям",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByCategory?category=Laptops&category=Phones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByCategory"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Watches",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Laptops"
+								},
+								{
+									"key": "category",
+									"value": "Phones"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по производителю Xiaomi",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByManufacturer?manufacturer=Xiaomi",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByManufacturer"
+							],
+							"query": [
+								{
+									"key": "manufacturer",
+									"value": "Xiaomi"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по несуществующему производителю",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByManufacturer?manufacturer=Sharp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByManufacturer"
+							],
+							"query": [
+								{
+									"key": "manufacturer",
+									"value": "Sharp"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по производителю без выбора производителя",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByManufacturer",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByManufacturer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров по нескольким выбранным производителям",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByManufacturer?manufacturer=Xiaomi&manufacturer=Apple",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByManufacturer"
+							],
+							"query": [
+								{
+									"key": "manufacturer",
+									"value": "Xiaomi"
+								},
+								{
+									"key": "manufacturer",
+									"value": "Apple"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров с бесплатной доставкой",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByShipping?freeShipping=true",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByShipping"
+							],
+							"query": [
+								{
+									"key": "freeShipping",
+									"value": "true"
+								},
+								{
+									"key": "freeShipping",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров с платной доставкой",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByShipping?freeShipping=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByShipping"
+							],
+							"query": [
+								{
+									"key": "freeShipping",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров с одновременным выбором платной и бесплатной доставки",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByShipping?freeShipping=true&freeShipping=false",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByShipping"
+							],
+							"query": [
+								{
+									"key": "freeShipping",
+									"value": "true"
+								},
+								{
+									"key": "freeShipping",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров с неверным значением бесплатной доставки",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByShipping?freeShipping=yes",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByShipping"
+							],
+							"query": [
+								{
+									"key": "freeShipping",
+									"value": "yes"
+								},
+								{
+									"key": "freeShipping",
+									"value": "0",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "null",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "<b>depends</b>",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "333",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "\" \"",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Поиск товаров с бесплатной доставкой без выбора доставки",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/FindByShipping",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"FindByShipping"
+							],
+							"query": [
+								{
+									"key": "freeShipping",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Фильтрация списка продуктов",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/filter?category=Watches",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Phones",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Watches"
+								},
+								{
+									"key": "category",
+									"value": "Laptops",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Xiaomi",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Apple",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Huawei",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Samsung",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Фильтрация списка продуктов по нескольким выбранным категориям",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/filter?category=Watches&category=Laptops",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Phones",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Watches"
+								},
+								{
+									"key": "category",
+									"value": "Laptops"
+								},
+								{
+									"key": "manufacturer",
+									"value": "Xiaomi",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Apple",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Huawei",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Samsung",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Фильтрация списка продуктов по нескольким выбранным категориям c неверным типом данных в доставке",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/filter?freeShipping=есть",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Phones",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Watches",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Laptops",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Xiaomi",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Apple",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Huawei",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Samsung",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "есть"
+								},
+								{
+									"key": "minPrice",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Фильтрация списка продуктов по нескольким выбранным категориям c отрицательной минимальной ценой",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/filter?minPrice=-200",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Phones",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Watches",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Laptops",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Xiaomi",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Apple",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Huawei",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Samsung",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "false",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "-200"
+								},
+								{
+									"key": "maxPrice",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Фильтрация списка продуктов по нескольким выбранным категориям c буквами в максимальной цене",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/filter?maxPrice=don't care",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"filter"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "Headphones",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Часы",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "Laptops",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Nokia",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Apple",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Huawei",
+									"disabled": true
+								},
+								{
+									"key": "manufacturer",
+									"value": "Samsung",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "freeShipping",
+									"value": "512",
+									"disabled": true
+								},
+								{
+									"key": "minPrice",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "maxPrice",
+									"value": "don't care"
+								},
+								{
+									"key": "color",
+									"value": "blue",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Авторизация пользователя успешная",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var responseJson = pm.response.json();\r",
+									"\r",
+									"var token = responseJson.token;\r",
+									"\r",
+									"pm.collectionVariables.set(\"tk\", token);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Авторизация пользователя неверный пароль",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Авторизация пользователя несуществующего",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Idonotexist\",\r\n  \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Регистрация нового пользователя",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"LuckyStar\",\r\n  \"password\": \"Konata42\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Регистрация нового пользователя c паролем без цифр",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"UnLuckyStar\",\r\n  \"password\": \"KonataTheBest\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Регистрация нового пользователя с параметрами существующего пользователя",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"DonkeyKong\",\r\n  \"password\": \"Nintendont64\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового пользователя c логином кириллицей",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"username\": \"Мантисслеер\",\r\n  \"password\": \"qwerty123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление нового пользователя запрос с пустым body",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получение всех user_id и login пользователей",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление пользователя по ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1978",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1978"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление несуществующего пользователя по ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/19978",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"19978"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Добавление товара в корзину пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 50,\r\n  \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление 0 товара в корзину пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 50,\r\n  \"quantity\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление товара в корзину пользователя без указания количества",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 50,\r\n  \"quantity\": \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление товара в корзину пользователя  с количеством товара прописью (five)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 50,\r\n  \"quantity\": \"five\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление товара в корзину пользователя без body",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление несуществующего товара в корзину пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 1999,\r\n  \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Добавление товара в корзину пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"productId\": 50,\r\n  \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Содержимое корзины пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"const cartItem = response.find(item => item.cart_item_id);\r",
+									"const cartItemId = cartItem ? cartItem.cart_item_id : null;\r",
+									"\r",
+									"if (cartItemId) {\r",
+									"    pm.collectionVariables.set(\"cart_item_id\", cartItemId);\r",
+									"} else {\r",
+									"    console.log(\"cart_item_id не найден в ответе\");\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/getCart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"getCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Содержимое корзины пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/getCart",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"getCart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в корзине",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в корзине с указанием количества прописью (two)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": \"two\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в корзине отрицательным количеством",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": -3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в корзине без указания количества",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в несуществующей корзине",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/91",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"91"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в корзине с пустым body",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление количества товара в корзине без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара из корзины пользователя",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						},
+						"description": "Для получения ответа 404 запустить запрос 2 раза - первый раз ответ 200 (успешное удаление, проверка после [GET запросом](https://www.postman.com/espar/workspace/g9-mikhail-li/request/20541504-e9538e23-ceaa-4d85-9f62-59b52cf956ac?action=share&source=copy-link&creator=20541504&active-environment=3d77f342-3802-45e6-9b35-3cadfc21182f)), второй раз ответ 404 (товар не найден)"
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара из несуществующей корзины пользователя",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cart/91",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"91"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара из корзины пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/cart/{{cart_item_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"cart",
+								"{{cart_item_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Получение списка всех заказов пользователя",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получение списка всех заказов пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/user-orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user-orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание заказа из товаров в корзине пользователя без body",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание заказа из товаров в корзине пользователя с данными в body",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"text\": \"{{$randomCatchPhrase}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Создание заказа из товаров в корзине пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара из заказа",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/4436/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4436",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара из несуществующего заказа",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/9999/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"9999",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление несуществующего товара из заказа",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/4436/products/53",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4436",
+								"products",
+								"53"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Удаление товара из заказа без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/4436/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4436",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в заказе",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/4438/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4438",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в несуществующем заказе",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/9999/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"9999",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в заказе с отрицательным количеством",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": -5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/4438/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4438",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в заказе с количеством прописью (three)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": \"three\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/4438/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4438",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в заказе с пустым полем количества",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/4438/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4438",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в заказе без body",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/4438/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4438",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Изменение количества товара в заказе без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"quantity\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/4438/products/50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"4438",
+								"products",
+								"50"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление общей суммы заказов пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/update-orders-total",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"update-orders-total"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление общей суммы заказов пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/update-orders-total",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"update-orders-total"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получение данных об оплаченных заказах",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/orders-history",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders-history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Получение данных об оплаченных заказах без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/orders-history",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders-history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Оплата заказов пользователя",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"card_type\": \"VISA\",\r\n  \"card_code\": \"8820354696467284\",\r\n  \"expiry_month\": 12,\r\n  \"expiry_year\": 26,\r\n  \"cvv\": \"123\",\r\n  \"email\": \"user@example.com\",\r\n  \"email_paypal\": \"user@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Оплата заказов пользователя с текстом в поле cvv",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"card_type\": \"VISA\",\r\n  \"card_code\": \"8820354696467284\",\r\n  \"expiry_month\": 12,\r\n  \"expiry_year\": 26,\r\n  \"cvv\": \"net\",\r\n  \"email\": \"user@example.com\",\r\n  \"email_paypal\": \"user@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Оплата заказов пользователя с отрицательным числом в поле год",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"card_type\": \"VISA\",\r\n  \"card_code\": \"8820354696467284\",\r\n  \"expiry_month\": 12,\r\n  \"expiry_year\": -1,\r\n  \"cvv\": \"123\",\r\n  \"email\": \"user@example.com\",\r\n  \"email_paypal\": \"user@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Оплата заказов пользователя c неверным типом карты",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"card_type\": \"Mir\",\r\n  \"card_code\": \"8820354696467284\",\r\n  \"expiry_month\": 12,\r\n  \"expiry_year\": 26,\r\n  \"cvv\": \"123\",\r\n  \"email\": \"user@example.com\",\r\n  \"email_paypal\": \"user@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Оплата заказов пользователя без body",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Оплата заказов пользователя без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"card_type\": \"VISA\",\r\n  \"card_code\": \"8820354696467284\",\r\n  \"expiry_month\": 12,\r\n  \"expiry_year\": 26,\r\n  \"cvv\": \"123\",\r\n  \"email\": \"user@example.com\",\r\n  \"email_paypal\": \"user@example.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"pay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление балансов карт и PayPal",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/updateBalances",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"updateBalances"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Обновление балансов карт и PayPal без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/updateBalances",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"updateBalances"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Database",
+			"item": [
+				{
+					"name": "Сброс базы данных",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reset-database",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reset-database"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Сброс базы данных без авторизации",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reset-database",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"reset-database"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{tk}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "tk",
+			"value": "{{vault:json-web-token}}"
+		},
+		{
+			"key": "cart_item_id",
+			"value": "13875"
+		}
+	]
+}
